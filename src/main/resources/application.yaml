@@ -1,0 +1,7 @@
+spring:
+  graphql:
+    graphiql:
+      enabled: true
+  data:
+    mongodb:
+      database: bank_accounts

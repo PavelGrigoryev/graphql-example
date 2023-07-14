@@ -1,0 +1,32 @@
+###save
+GRAPHQL http://localhost:8080/graphql
+
+mutation save {
+  save(name: "Sasha", currency: BYN) {
+    id,
+    name,
+    currency
+  }
+}
+
+###findById
+GRAPHQL http://localhost:8080/graphql
+
+query findById {
+  findById(id: "64b1bdd53779aa683e025836") {
+    id,
+    name,
+    currency
+  }
+}
+
+###updateById
+GRAPHQL http://localhost:8080/graphql
+
+mutation updateById {
+  updateById(id: "64b1bdd53779aa683e025836", name: "Dimas", currency: RUB) {
+    id,
+    name,
+    currency
+  }
+}
