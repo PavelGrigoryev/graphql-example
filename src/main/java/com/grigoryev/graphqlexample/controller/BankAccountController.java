@@ -10,8 +10,8 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Controller
@@ -21,31 +21,31 @@ public class BankAccountController {
     private final BankAccountService bankAccountService;
 
     @MutationMapping
-    public BankAccount save(@Argument String name, @Argument Currency currency) {
+    public Mono<BankAccount> save(@Argument String name, @Argument Currency currency) {
         log.info("Args: name={}, currency={}", name, currency);
         return bankAccountService.save(name, currency);
     }
 
     @QueryMapping
-    public BankAccount findById(@Argument String id) {
+    public Mono<BankAccount> findById(@Argument String id) {
         log.info("Args: id={}", id);
         return bankAccountService.findById(id);
     }
 
     @MutationMapping
-    public BankAccount updateById(@Argument String id, @Argument String name, @Argument Currency currency) {
+    public Mono<BankAccount> updateById(@Argument String id, @Argument String name, @Argument Currency currency) {
         log.info("Args: id={}, name={}, currency={}", id, name, currency);
         return bankAccountService.updateById(id, name, currency);
     }
 
     @MutationMapping
-    public DeleteResponse deleteById(@Argument String id) {
+    public Mono<DeleteResponse> deleteById(@Argument String id) {
         log.info("Args: id={}", id);
         return bankAccountService.deleteById(id);
     }
 
     @QueryMapping
-    public List<BankAccount> findAll() {
+    public Flux<BankAccount> findAll() {
         return bankAccountService.findAll();
     }
 

@@ -7,13 +7,11 @@ import com.grigoryev.graphqlexample.model.DeleteResponse;
 import com.grigoryev.graphqlexample.repository.BankAccountRepository;
 import com.grigoryev.graphqlexample.service.BankAccountService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
-
-@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -23,50 +21,45 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     @Override
     @Transactional
-    public BankAccount save(String name, Currency currency) {
+    public Mono<BankAccount> save(String name, Currency currency) {
         BankAccount bankAccount = BankAccount.builder()
                 .name(name)
                 .currency(currency)
                 .build();
-        BankAccount saved = bankAccountRepository.save(bankAccount);
-        log.info("Save: {}", saved);
-        return saved;
+        return bankAccountRepository.save(bankAccount)
+                .log("BankAccountServiceImpl save:");
     }
 
     @Override
-    public BankAccount findById(String id) {
-        BankAccount bankAccount = bankAccountRepository.findById(id)
-                .orElseThrow(() -> new NoSuchBankAccountException("BankAccount with ID " + id + " does not exist"));
-        log.info("FindById: {}", bankAccount);
-        return bankAccount;
-    }
-
-    @Override
-    @Transactional
-    public BankAccount updateById(String id, String name, Currency currency) {
-        BankAccount bankAccount = findById(id);
-        bankAccount.setName(name);
-        bankAccount.setCurrency(currency);
-        BankAccount updated = bankAccountRepository.save(bankAccount);
-        log.info("UpdateById: {}", updated);
-        return updated;
+    public Mono<BankAccount> findById(String id) {
+        return bankAccountRepository.findById(id)
+                .switchIfEmpty(Mono.error(() -> new NoSuchBankAccountException("BankAccount with ID " + id + " does not exist")))
+                .log("BankAccountServiceImpl findById:");
     }
 
     @Override
     @Transactional
-    public DeleteResponse deleteById(String id) {
-        findById(id);
-        bankAccountRepository.deleteById(id);
-        DeleteResponse response = new DeleteResponse("BankAccount with ID " + id + " was successfully deleted");
-        log.info("DeleteById: {}", response);
-        return response;
+    public Mono<BankAccount> updateById(String id, String name, Currency currency) {
+        return findById(id)
+                .doOnNext(bankAccount -> bankAccount.setName(name))
+                .doOnNext(bankAccount -> bankAccount.setCurrency(currency))
+                .flatMap(bankAccountRepository::save)
+                .log("BankAccountServiceImpl updateById:");
     }
 
     @Override
-    public List<BankAccount> findAll() {
-        List<BankAccount> bankAccounts = bankAccountRepository.findAll();
-        log.info("FindAll: {}", bankAccounts);
-        return bankAccounts;
+    @Transactional
+    public Mono<DeleteResponse> deleteById(String id) {
+        return findById(id)
+                .flatMap(bankAccountRepository::delete)
+                .thenReturn(new DeleteResponse("BankAccount with ID " + id + " was successfully deleted"))
+                .log("BankAccountServiceImpl deleteById:");
+    }
+
+    @Override
+    public Flux<BankAccount> findAll() {
+        return bankAccountRepository.findAll()
+                .log("BankAccountServiceImpl findAll:");
     }
 
 }
