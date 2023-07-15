@@ -30,3 +30,23 @@ mutation updateById {
     currency
   }
 }
+
+###deleteById
+GRAPHQL http://localhost:8080/graphql
+
+mutation deleteById {
+  deleteById(id: "64b1bdd53779aa683e025836") {
+    message
+  }
+}
+
+###findAll
+GRAPHQL http://localhost:8080/graphql
+
+query findAll {
+  findAll {
+    id,
+    name,
+    currency
+  }
+}

@@ -1,8 +1,10 @@
 type Query {
     findById(id: ID): BankAccount
+    findAll: [BankAccount]
 }
 
 type Mutation {
     save(name: String, currency: Currency) : BankAccount
     updateById(id: ID, name: String, currency: Currency) : BankAccount
+    deleteById(id: ID) : DeleteResponse
 }
