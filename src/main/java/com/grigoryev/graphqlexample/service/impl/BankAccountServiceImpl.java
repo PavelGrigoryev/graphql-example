@@ -60,8 +60,8 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    public Flux<BankAccount> findAll() {
-        return bankAccountRepository.findAll()
+    public Flux<BankAccount> findAll(Integer skip, Integer limit) {
+        return bankAccountRepository.findAll(skip, limit)
                 .log("BankAccountServiceImpl findAll:");
     }
 

@@ -1,6 +1,6 @@
 type Query {
     findById(id: ID): BankAccount
-    findAll: [BankAccount]
+    findAll(skip: Int, limit: Int): [BankAccount]
 }
 
 type Mutation {

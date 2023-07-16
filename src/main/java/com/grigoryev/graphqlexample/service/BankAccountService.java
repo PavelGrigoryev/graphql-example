@@ -16,6 +16,6 @@ public interface BankAccountService {
 
     Mono<DeleteResponse> deleteById(String id);
 
-    Flux<BankAccount> findAll();
+    Flux<BankAccount> findAll(Integer skip, Integer limit);
 
 }

@@ -44,7 +44,7 @@ mutation deleteById {
 GRAPHQL http://localhost:8080/graphql
 
 query findAll {
-  findAll {
+  findAll(skip: 3, limit: 5) {
     id,
     name,
     currency

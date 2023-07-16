@@ -35,8 +35,8 @@ public record BankAccountController(BankAccountService bankAccountService) {
     }
 
     @QueryMapping
-    public Flux<BankAccount> findAll() {
-        return bankAccountService.findAll();
+    public Flux<BankAccount> findAll(@Argument Integer skip, @Argument Integer limit) {
+        return bankAccountService.findAll(skip, limit);
     }
 
 }
