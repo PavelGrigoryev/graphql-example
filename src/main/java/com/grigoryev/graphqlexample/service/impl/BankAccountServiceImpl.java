@@ -41,8 +41,11 @@ public class BankAccountServiceImpl implements BankAccountService {
     @Transactional
     public Mono<BankAccount> updateById(String id, String name, Currency currency) {
         return findById(id)
-                .doOnNext(bankAccount -> bankAccount.setName(name))
-                .doOnNext(bankAccount -> bankAccount.setCurrency(currency))
+                .map(bankAccount -> {
+                    bankAccount.setName(name);
+                    bankAccount.setCurrency(currency);
+                    return bankAccount;
+                })
                 .flatMap(bankAccountRepository::save)
                 .log("BankAccountServiceImpl updateById:");
     }
