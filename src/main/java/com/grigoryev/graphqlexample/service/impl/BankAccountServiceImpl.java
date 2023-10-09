@@ -33,7 +33,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     @Override
     public Mono<BankAccount> findById(String id) {
         return bankAccountRepository.findById(id)
-                .switchIfEmpty(Mono.error(() -> new NoSuchBankAccountException("BankAccount with ID " + id + " does not exist!")))
+                .switchIfEmpty(Mono.error(() -> new NoSuchBankAccountException("BankAccount with ID " + id + " does not exist")))
                 .log("BankAccountServiceImpl findById:");
     }
 
